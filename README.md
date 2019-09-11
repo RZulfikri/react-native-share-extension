@@ -114,6 +114,8 @@ The setup requires a little bit more work. I will try to describe as detail as p
 
 > If your project entry is `index.js` instead of `index.ios.js` then needs to replace `@"index.ios"` with `@"index"`
 
+> Check `ReactNativeShareExtension.m` file, I define module name as `Share` so you need to set name of your module in `index.js` or `share.index` as `Share`
+
 ```objective-c
 #import <Foundation/Foundation.h>
 #import "ReactNativeShareExtension.h"
@@ -129,20 +131,18 @@ The setup requires a little bit more work. I will try to describe as detail as p
 RCT_EXPORT_MODULE();
 
 - (UIView*) shareView {
-  NSURL *jsCodeLocation;
+  return nil;
+}
 
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+- (RCTBridge*)setBridge {
+  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
+  return bridge;
+}
 
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:@"MyShareEx"
-                                               initialProperties:nil
-                                                   launchOptions:nil];
-  rootView.backgroundColor = nil;
-
-  // Uncomment for console output in Xcode console for release mode on device:
-  // RCTSetLogThreshold(RCTLogLevelInfo - 1);
-
-  return rootView;
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
+{
+  // share.index depend on your root file
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"share.index" fallbackResource:nil];
 }
 
 @end
