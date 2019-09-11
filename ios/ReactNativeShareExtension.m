@@ -7,6 +7,8 @@
 #define TEXT_IDENTIFIER (NSString *)kUTTypePlainText
 
 NSExtensionContext* extensionContext;
+RCTBridge *shareBridge;
+UIView *shareRootView;
 
 @implementation ReactNativeShareExtension {
     NSTimer *autoTimer;
@@ -18,6 +20,10 @@ NSExtensionContext* extensionContext;
     return nil;
 }
 
+- (RCTBridge *) setBridge {
+    return nil;
+}
+
 RCT_EXPORT_MODULE();
 
 - (void)viewDidLoad {
@@ -26,17 +32,23 @@ RCT_EXPORT_MODULE();
     //object variable for extension doesn't work for react-native. It must be assign to gloabl
     //variable extensionContext. in this way, both exported method can touch extensionContext
     extensionContext = self.extensionContext;
-
-    UIView *rootView = [self shareView];
-    if (rootView.backgroundColor == nil) {
-        rootView.backgroundColor = [[UIColor alloc] initWithRed:1 green:1 blue:1 alpha:0.1];
+    
+    if (shareBridge == nil) {
+        shareBridge = [self setBridge];
     }
+
+    
+    RCTRootView *rootView  = [[RCTRootView alloc] initWithBridge: shareBridge
+                                             moduleName:@"Share"
+                                      initialProperties:nil];
+    rootView.backgroundColor = nil;
 
     self.view = rootView;
 }
 
 
 RCT_EXPORT_METHOD(close) {
+    [self dismissViewControllerAnimated:YES completion:nil];
     [extensionContext completeRequestReturningItems:nil
                                   completionHandler:nil];
 }

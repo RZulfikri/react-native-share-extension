@@ -3,4 +3,5 @@
 
 @interface ReactNativeShareExtension : UIViewController<RCTBridgeModule>
 - (UIView*) shareView;
+- (RCTBridge*)setBridge;
 @end
